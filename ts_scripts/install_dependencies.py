@@ -1,6 +1,7 @@
 import argparse
 import os
 import platform
+import subprocess
 import sys
 
 from print_env_info import run_and_parse_first_match
@@ -81,6 +82,20 @@ CPP_DARWIN_DEPENDENCIES_LINK = (
     "xz",
     "libsodium",
 )
+
+class _os:
+    dry_run = False
+
+    @classmethod
+    def run(cls, command):
+        if cls.dry_run:
+            print(command)
+        else:
+            os.system(command)
+
+    @staticmethod
+    def test(command):
+        return subprocess.run(command, shell=True, capture_output=True).returncode
 
 
 class Common:
@@ -343,6 +358,11 @@ if __name__ == "__main__":
         description="Install the production or developer dependencies of TorchServe"
     )
     parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Take no action, instead show the commands which will run. Default: false",
+    )
+    parser.add_argument(
         "--cuda",
         default=None,
         choices=[
@@ -393,5 +413,7 @@ if __name__ == "__main__":
         help="force reinstall dependencies wget, node, java and apt-update",
     )
     args = parser.parse_args()
+
+    _os.dry_run = args.dry_run
 
     install_dependencies(cuda_version=args.cuda, nightly=args.nightly_torch)
