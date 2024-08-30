@@ -340,7 +340,7 @@ def get_brew_version():
 if __name__ == "__main__":
     check_python_version()
     parser = argparse.ArgumentParser(
-        description="Install various build and test dependencies of TorchServe"
+        description="Install the production or developer dependencies of TorchServe"
     )
     parser.add_argument(
         "--cuda",
@@ -356,7 +356,7 @@ if __name__ == "__main__":
             "cu118",
             "cu121",
         ],
-        help="CUDA version for torch",
+        help="CUDA version for torch, not supported on macOS. Default: none",
     )
     parser.add_argument(
         "--neuronx",
@@ -372,13 +372,13 @@ if __name__ == "__main__":
         "--environment",
         default="prod",
         choices=["prod", "dev"],
-        help="environment(production or developer) on which dependencies will be installed",
+        help="Environment (prod or dev) for which dependencies will be installed.  Default: prod",
     )
 
     parser.add_argument(
         "--nightly_torch",
         action="store_true",
-        help="Install nightly version of torch package",
+        help="Install nightly version of torch package. Default: false",
     )
 
     parser.add_argument(
