@@ -300,6 +300,7 @@ class Darwin(Common):
 
     def install_numactl(self):
         if _os.test("numactl --show") != 0 or args.force:
+            # FIXME: ? No such package, but `kumactl` -- which seems unrelated, kuma.io
             _os.run("brew install numactl")
 
     def install_cpp_dependencies(self):
@@ -336,11 +337,14 @@ def install_dependencies(cuda_version=None, nightly=False):
     if args.neuronx:
         system.install_neuronx_driver()
 
+    # FIXME: Move more of `common.txt` to `setup.py`?
+    #        Then `pip install torchserve https://raw.github.com/.../common.txt`
     requirements_file = "common.txt" if args.environment == "prod" else "developer.txt"
     requirements_file_path = os.path.join("requirements", requirements_file)
 
     system.install_python_packages(cuda_version, requirements_file_path, nightly)
 
+    # FIXME: Move to env "dev"?
     if args.cpp:
         system.install_cpp_dependencies()
 
